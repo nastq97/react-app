@@ -13,8 +13,8 @@ jobs:
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
-          path: \%AppData%/npm-cache
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          path: '%AppData%/npm-cache'
+          keys: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-key: |
             ${{ runner.os }}-node-
       - name: Use NodeJS 
