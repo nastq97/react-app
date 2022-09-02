@@ -41,7 +41,6 @@ jobs:
         with: 
           name: build
           path: build
-      - uses: actions/download-artifacts@v1
       - name: Deply to Staging
         if: github.event_name == 'push'
         run: npx surge --project ./build --domain https://fierce-smash.surge.sh
