@@ -8,6 +8,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+      SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
     steps:
       - uses: actions/checkout@v2
 
@@ -49,15 +52,25 @@ jobs:
         run: |
           zip -r build.zip ./build
           zip -r coverage.zip ./coverage
+
       - name: Create a Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deply to Staging
-        if: github.event_name == 'push'
-        run: npx surge --project ./build --domain https://fierce-smash.surge.sh
-        env:
-          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
-          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
 
+      - name: Deply to Staging
+        if: github.event_name == 'push' && github.ref ==
+         'refs/heads/develop'
+        run: npx surge --project ./build --domain https://fierce-smash.surge.sh
+
+      - name: Deply to Production
+        if: github.event_name == 'push' && github.ref ==
+         'refs/heads/master'
+        run: npx surge --project ./build --domain glorious-magic.surge.sh
+      - name: Upload Coverage Report
+        if: github.event_name == 'push' && github.ref ==
+         'refs/heads/master'
+        run: npx codecov
+        env:
+          CODECOV_TOKEN: ${{  secrets.CODECOV_TOKEN }}
