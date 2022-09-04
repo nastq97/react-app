@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Cache node_modules
         uses: actions/cache@v1
         with:
@@ -17,10 +18,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+
       - name: Use NodeJS 
         uses: actions/setup-node@v1
         with: 
           node-version: "17.x"
+
       - run: npm ci
       - run: npm run format:check
       - run: npm test -- --coverage
@@ -41,6 +44,11 @@ jobs:
         with: 
           name: build
           path: build
+      - name: ZIP Assets
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: |
+          zip -r build.zip ./build
+          zip -r coverage.zip ./coverage
       - name: Create a Release
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: npx semantic-release
