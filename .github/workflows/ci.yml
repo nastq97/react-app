@@ -67,7 +67,7 @@ jobs:
       - name: Deply to Production
         if: github.event_name == 'push' && github.ref ==
          'refs/heads/master'
-        run: npx surge --project ./build --domain https://glorious-magic.surge.sh
+        run: npx surge --project ./build --domain https://fierce-smash.surge.sh
       
       - name: Upload Coverage Report
         if: github.event_name == 'push' && github.ref ==
